@@ -1,0 +1,5 @@
+package_name: "express"
+repository: "not-a-valid-url"
+test_mode: false
+output_file: "dependency-graph.svg"
+filter_substring: "@types/"
