@@ -18,6 +18,8 @@ xcrun --sdk macosx swiftc \
     "$PROJECT_DIR/src/DependencyGraph.swift" \
     "$PROJECT_DIR/src/DependencyGraphBuilder.swift" \
     "$PROJECT_DIR/src/DependencyLoadOrder.swift" \
+    "$PROJECT_DIR/src/D2GraphGenerator.swift" \
+    "$PROJECT_DIR/src/D2Renderer.swift" \
     "$PROJECT_DIR/src/main.swift" \
     -o "$EXECUTABLE"
 

@@ -66,6 +66,28 @@ do {
     )
 
     loadOrder.printResult()
+    print()
+
+    let d2Generator = D2GraphGenerator()
+    let d2Source = d2Generator.generate(
+        from: graph
+    )
+
+    print("Описание графа на языке D2:")
+    print(d2Source, terminator: "")
+    print()
+
+    let renderer = D2Renderer()
+
+    try renderer.render(
+        source: d2Source,
+        outputPath: configuration.outputFile
+    )
+
+    print(
+        "SVG-файл сохранен: " +
+        configuration.outputFile
+    )
 } catch let error as YAMLParserError {
     print("Ошибка конфигурационного файла:")
     print(error.description)
@@ -80,6 +102,10 @@ do {
     exit(1)
 } catch let error as TestRepositoryError {
     print("Ошибка тестового репозитория:")
+    print(error.description)
+    exit(1)
+} catch let error as D2RendererError {
+    print("Ошибка визуализации:")
     print(error.description)
     exit(1)
 } catch {

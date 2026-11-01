@@ -1,0 +1,5 @@
+package_name: "is-number"
+repository: "https://registry.npmjs.org"
+test_mode: false
+output_file: "examples/output/is-number.svg"
+filter_substring: "@types/"
