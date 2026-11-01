@@ -54,9 +54,9 @@ run_failure_test() {
 }
 
 run_success_test \
-    "Корректная конфигурация" \
+    "Получение прямых зависимостей" \
     "$CONFIG_DIR/valid.yaml" \
-    "package_name: express"
+    "Прямые зависимости пакета express@"
 
 run_failure_test \
     "Пустое имя пакета" \
@@ -82,6 +82,11 @@ run_failure_test \
     "Пустая подстрока фильтрации" \
     "$CONFIG_DIR/empty_filter.yaml" \
     "Пустое значение параметра filter_substring"
+
+run_failure_test \
+    "Пакет не найден в npm Registry" \
+    "$CONFIG_DIR/package_not_found.yaml" \
+    "не найден в репозитории"
 
 run_failure_test \
     "Отсутствующий конфигурационный файл" \

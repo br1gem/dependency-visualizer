@@ -11,6 +11,8 @@ mkdir -p "$BUILD_DIR"
 xcrun --sdk macosx swiftc \
     "$PROJECT_DIR/src/Configuration.swift" \
     "$PROJECT_DIR/src/YAMLParser.swift" \
+    "$PROJECT_DIR/src/NPMModels.swift" \
+    "$PROJECT_DIR/src/NPMRegistryClient.swift" \
     "$PROJECT_DIR/src/main.swift" \
     -o "$EXECUTABLE"
 

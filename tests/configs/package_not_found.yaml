@@ -1,0 +1,5 @@
+package_name: "package-that-does-not-exist-variant15-2026"
+repository: "https://registry.npmjs.org"
+test_mode: false
+output_file: "dependency-graph.svg"
+filter_substring: "@types/"
