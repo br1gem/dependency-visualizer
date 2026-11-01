@@ -69,24 +69,24 @@ run_failure_test() {
 }
 
 run_success_test \
-    "Граф реального npm-пакета" \
+    "Порядок загрузки реального npm-графа" \
     "$CONFIG_DIR/valid.yaml" \
-    "Корневой пакет: is-odd"
+    "is-number -> is-odd"
 
 run_success_test \
-    "Обход обычного графа алгоритмом BFS" \
+    "Порядок загрузки обычного графа" \
     "$CONFIG_DIR/basic_graph.yaml" \
-    "Порядок обхода BFS: A -> B -> C -> D -> E -> F -> G"
+    "D -> F -> G -> E -> B -> C -> A"
 
 run_success_test \
-    "Обработка циклического графа" \
+    "Обнаружение цикла при упорядочивании" \
     "$CONFIG_DIR/cycle_graph.yaml" \
-    "C -> A"
+    "Полный порядок загрузки определить невозможно"
 
 run_success_test \
-    "Фильтрация пакетов" \
+    "Порядок загрузки после фильтрации" \
     "$CONFIG_DIR/filtered_graph.yaml" \
-    "Всего пакетов: 3" \
+    "C -> B -> A" \
     "X ->"
 
 run_failure_test \

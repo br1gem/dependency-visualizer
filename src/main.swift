@@ -57,7 +57,15 @@ do {
 
     graph.printTraversalOrder()
     print()
+
     graph.printAdjacencyList()
+    print()
+
+    let loadOrder = DependencyLoadOrder.calculate(
+        for: graph
+    )
+
+    loadOrder.printResult()
 } catch let error as YAMLParserError {
     print("Ошибка конфигурационного файла:")
     print(error.description)
