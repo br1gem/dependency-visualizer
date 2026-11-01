@@ -12,23 +12,35 @@ run_success_test() {
     local name="$1"
     local config="$2"
     local expected="$3"
+    local forbidden="${4:-}"
     local output
 
-    if output=$("$PROJECT_DIR/run.sh" "$config" 2>&1); then
-        if echo "$output" | grep -Fq "$expected"; then
-            echo "PASS: $name"
-            ((PASSED += 1))
-        else
-            echo "FAIL: $name"
-            echo "Ожидалась строка: $expected"
-            echo "$output"
-            ((FAILED += 1))
-        fi
-    else
+    if ! output=$("$PROJECT_DIR/run.sh" "$config" 2>&1); then
         echo "FAIL: $name"
         echo "$output"
         ((FAILED += 1))
+        return
     fi
+
+    if ! echo "$output" | grep -Fq "$expected"; then
+        echo "FAIL: $name"
+        echo "Ожидалась строка: $expected"
+        echo "$output"
+        ((FAILED += 1))
+        return
+    fi
+
+    if [[ -n "$forbidden" ]] &&
+        echo "$output" | grep -Fq "$forbidden"; then
+        echo "FAIL: $name"
+        echo "Найдена запрещенная строка: $forbidden"
+        echo "$output"
+        ((FAILED += 1))
+        return
+    fi
+
+    echo "PASS: $name"
+    ((PASSED += 1))
 }
 
 run_failure_test() {
@@ -42,7 +54,10 @@ run_failure_test() {
         echo "Программа должна была завершиться с ошибкой"
         echo "$output"
         ((FAILED += 1))
-    elif echo "$output" | grep -Fq "$expected"; then
+        return
+    fi
+
+    if echo "$output" | grep -Fq "$expected"; then
         echo "PASS: $name"
         ((PASSED += 1))
     else
@@ -54,9 +69,25 @@ run_failure_test() {
 }
 
 run_success_test \
-    "Получение прямых зависимостей" \
+    "Граф реального npm-пакета" \
     "$CONFIG_DIR/valid.yaml" \
-    "Прямые зависимости пакета express@"
+    "Корневой пакет: is-odd"
+
+run_success_test \
+    "Обход обычного графа алгоритмом BFS" \
+    "$CONFIG_DIR/basic_graph.yaml" \
+    "Порядок обхода BFS: A -> B -> C -> D -> E -> F -> G"
+
+run_success_test \
+    "Обработка циклического графа" \
+    "$CONFIG_DIR/cycle_graph.yaml" \
+    "C -> A"
+
+run_success_test \
+    "Фильтрация пакетов" \
+    "$CONFIG_DIR/filtered_graph.yaml" \
+    "Всего пакетов: 3" \
+    "X ->"
 
 run_failure_test \
     "Пустое имя пакета" \

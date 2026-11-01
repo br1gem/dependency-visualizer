@@ -1,0 +1,5 @@
+package_name: "A"
+repository: "tests/repositories/cycle.json"
+test_mode: true
+output_file: "cycle-graph.svg"
+filter_substring: "ZZZ"

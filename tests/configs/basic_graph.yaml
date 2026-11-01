@@ -1,0 +1,5 @@
+package_name: "A"
+repository: "tests/repositories/basic.json"
+test_mode: true
+output_file: "basic-graph.svg"
+filter_substring: "ZZZ"

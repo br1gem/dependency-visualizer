@@ -13,6 +13,10 @@ xcrun --sdk macosx swiftc \
     "$PROJECT_DIR/src/YAMLParser.swift" \
     "$PROJECT_DIR/src/NPMModels.swift" \
     "$PROJECT_DIR/src/NPMRegistryClient.swift" \
+    "$PROJECT_DIR/src/TestRepository.swift" \
+    "$PROJECT_DIR/src/DependencyDataSource.swift" \
+    "$PROJECT_DIR/src/DependencyGraph.swift" \
+    "$PROJECT_DIR/src/DependencyGraphBuilder.swift" \
     "$PROJECT_DIR/src/main.swift" \
     -o "$EXECUTABLE"
 

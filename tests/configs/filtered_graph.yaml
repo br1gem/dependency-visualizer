@@ -1,0 +1,5 @@
+package_name: "A"
+repository: "tests/repositories/filter.json"
+test_mode: true
+output_file: "filtered-graph.svg"
+filter_substring: "X"

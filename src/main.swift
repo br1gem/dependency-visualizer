@@ -1,16 +1,5 @@
 import Foundation
 
-enum ApplicationError: Error, CustomStringConvertible {
-    case testModeUnavailable
-
-    var description: String {
-        switch self {
-        case .testModeUnavailable:
-            return "Тестовый режим будет доступен на этапе 3"
-        }
-    }
-}
-
 let arguments = CommandLine.arguments
 
 guard arguments.count <= 2 else {
@@ -34,36 +23,41 @@ do {
     )
 
     let configuration = try Configuration(values: values)
+    let dataSource: DependencyDataSource
 
-    guard !configuration.testMode else {
-        throw ApplicationError.testModeUnavailable
-    }
+    if configuration.testMode {
+        let testRepository = try TestRepository(
+            fileAtPath: configuration.repository
+        )
 
-    let client = NPMRegistryClient(
-        repositoryURL: configuration.repository
-    )
-
-    let result = try await client.fetchDirectDependencies(
-        for: configuration.packageName
-    )
-
-    print(
-        "Прямые зависимости пакета " +
-        "\(result.packageName)@\(result.packageVersion):"
-    )
-
-    if result.dependencies.isEmpty {
-        print("Прямые зависимости отсутствуют.")
+        dataSource = .test(testRepository)
     } else {
-        for dependency in result.dependencies {
-            print(
-                "- \(dependency.name): " +
-                "\(dependency.versionRequirement)"
-            )
-        }
+        let npmClient = NPMRegistryClient(
+            repositoryURL: configuration.repository
+        )
+
+        dataSource = .npm(npmClient)
     }
 
-    print("Всего зависимостей: \(result.dependencies.count)")
+    let graphBuilder = DependencyGraphBuilder(
+        dataSource: dataSource,
+        filterSubstring: configuration.filterSubstring
+    )
+
+    let graph = try await graphBuilder.buildGraph(
+        from: configuration.packageName
+    )
+
+    print("Корневой пакет: \(configuration.packageName)")
+    print(
+        "Фильтр пакетов: " +
+        configuration.filterSubstring
+    )
+    print()
+
+    graph.printTraversalOrder()
+    print()
+    graph.printAdjacencyList()
 } catch let error as YAMLParserError {
     print("Ошибка конфигурационного файла:")
     print(error.description)
@@ -76,8 +70,8 @@ do {
     print("Ошибка npm Registry:")
     print(error.description)
     exit(1)
-} catch let error as ApplicationError {
-    print("Ошибка приложения:")
+} catch let error as TestRepositoryError {
+    print("Ошибка тестового репозитория:")
     print(error.description)
     exit(1)
 } catch {
